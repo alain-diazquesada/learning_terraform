@@ -50,19 +50,12 @@ resource "aws_s3_bucket_policy" "web_bucket" {
 
 # aws_s3_object
 
-resource "aws_s3_object" "website" {
+resource "aws_s3_object" "website_content" {
+  for_each = local.website_content
+  # for_each = toset(["website/index.html", "website/Globo_logo_Vert.png"])
   bucket = aws_s3_bucket.web_bucket.bucket
-  key    = "/website/index.html"
-  source = "./website/index.html"
-
-  tags = local.common_tags
-
-}
-
-resource "aws_s3_object" "graphic" {
-  bucket = aws_s3_bucket.web_bucket.bucket
-  key    = "/website/Globo_logo_Vert.png"
-  source = "./website/Globo_logo_Vert.png"
+  key    = each.value # could use each.key if you use a toset instead of a map
+  source = "${path.module}/${each.value}"
 
   tags = local.common_tags
 

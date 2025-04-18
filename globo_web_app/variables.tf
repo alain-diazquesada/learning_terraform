@@ -18,6 +18,13 @@ variable "vpc_cidr_block" {
   default     = "10.0.0.0/16"
 }
 
+variable "vpc_public_subnets_count" {
+  type        = number
+  description = "Number of public subnets in VPC"
+  default     = 2
+
+}
+
 variable "vpc_public_subnets_cidr_block" {
   type        = list(string)
   description = "CIDR Block for public subnets in VPC"
@@ -25,10 +32,10 @@ variable "vpc_public_subnets_cidr_block" {
 }
 
 variable "aws_route_table" {
-  type       = list(string)
+  type        = list(string)
   description = "Route table for VPC subnets"
-  default = [ "0.0.0.0/0" ]
-  
+  default     = ["0.0.0.0/0"]
+
 }
 
 variable "map_public_ip_on_launch" {
@@ -41,6 +48,13 @@ variable "aws_instance_type" {
   type        = string
   description = "Type for EC2 Instnace"
   default     = "t3.micro"
+}
+
+variable "aws_instance_count" {
+  type        = number
+  description = "Number of EC2 instances to create"
+  default     = 2
+
 }
 
 ## Add these after the local value discussion
@@ -59,4 +73,18 @@ variable "project" {
 variable "billing_code" {
   type        = string
   description = "Billing code for resource tagging"
+}
+
+variable "naming_prefix" {
+  type        = string
+  description = "Prefix for resource names"
+  default     = "globo-web-app"
+
+}
+
+variable "environment" {
+  type        = string
+  description = "Environment for resource tagging"
+  default     = "dev"
+
 }
