@@ -3,9 +3,10 @@
 ##################################################################################
 
 provider "aws" {
-  access_key = "ACCESS_KEY"
-  secret_key = "SECRET_KEY"
-  region     = "us-east-1"
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
+  region     = var.aws_region["us_east_1"] # region     = var.aws_region["us_west_2"]
+  
 }
 
 ##################################################################################
@@ -22,7 +23,7 @@ data "aws_ssm_parameter" "amzn2_linux" {
 
 # NETWORKING #
 resource "aws_vpc" "app" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = var.cidr_blocks["aws_vpc"]
   enable_dns_hostnames = true
 
 }
@@ -33,7 +34,7 @@ resource "aws_internet_gateway" "app" {
 }
 
 resource "aws_subnet" "public_subnet1" {
-  cidr_block              = "10.0.0.0/24"
+  cidr_block              = var.cidr_blocks["public_subnet1"]
   vpc_id                  = aws_vpc.app.id
   map_public_ip_on_launch = true
 }
@@ -43,7 +44,7 @@ resource "aws_route_table" "app" {
   vpc_id = aws_vpc.app.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.cidr_blocks["route"]
     gateway_id = aws_internet_gateway.app.id
   }
 }
@@ -79,7 +80,7 @@ resource "aws_security_group" "nginx_sg" {
 # INSTANCES #
 resource "aws_instance" "nginx1" {
   ami                    = nonsensitive(data.aws_ssm_parameter.amzn2_linux.value)
-  instance_type          = "t3.micro"
+  instance_type          = var.aws_instance_type
   subnet_id              = aws_subnet.public_subnet1.id
   vpc_security_group_ids = [aws_security_group.nginx_sg.id]
 
