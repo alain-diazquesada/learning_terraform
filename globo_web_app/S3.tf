@@ -1,4 +1,4 @@
-module "s3-bucket" {
+module "web-app-s3" {
   source = "./modules/globo-web-app-s3"
 
   bucket_name             = local.s3_bucket_name

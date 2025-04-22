@@ -9,11 +9,11 @@ resource "aws_instance" "nginx_instances" {
   instance_type          = var.aws_instance_type
   subnet_id              = module.app.public_subnets[(count.index % var.vpc_public_subnets_count)].id
   vpc_security_group_ids = [aws_security_group.nginx_sg.id]
-  iam_instance_profile   = module.s3-bucket.instance_profile
+  iam_instance_profile   = module.web-app-s3.instance_profile
   depends_on             = [module.s3-bucket]
 
   user_data = templatefile("${path.module}/templates/startup_script.tpl", {
-    s3_bucket_name = module.s3-bucket.web_bucket.id
+    s3_bucket_name = module.web-app-s3.web_bucket.id
   })
 
   tags = local.common_tags
