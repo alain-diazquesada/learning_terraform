@@ -7,13 +7,13 @@ resource "aws_instance" "nginx_instances" {
   count                  = var.aws_instance_count
   ami                    = nonsensitive(data.aws_ssm_parameter.amzn2_linux.value)
   instance_type          = var.aws_instance_type
-  subnet_id              = aws_subnet.public_subnets[(count.index % var.vpc_public_subnets_count)].id
+  subnet_id              = module.app.public_subnets[(count.index % var.vpc_public_subnets_count)].id
   vpc_security_group_ids = [aws_security_group.nginx_sg.id]
-  iam_instance_profile   = aws_iam_instance_profile.nginx_profile.name
-  depends_on             = [aws_iam_role_policy.allow_s3_all]
+  iam_instance_profile   = module.s3-bucket.instance_profile
+  depends_on             = [module.s3-bucket]
 
   user_data = templatefile("${path.module}/templates/startup_script.tpl", {
-    s3_bucket_name = aws_s3_bucket.web_bucket.id
+    s3_bucket_name = module.s3-bucket.web_bucket.id
   })
 
   tags = local.common_tags
@@ -68,14 +68,4 @@ resource "aws_iam_role_policy" "allow_s3_all" {
 }
 EOF
 
-}
-
-#aws_iam_instance_profile
-resource "aws_iam_instance_profile" "nginx_profile" {
-  name = "nginx_profile"
-  role = aws_iam_role.allow_nginx_s3.name
-
-
-
-  tags = local.common_tags
 }
