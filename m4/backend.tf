@@ -2,7 +2,7 @@
 terraform {
   cloud {
     # Organization ID
-    organization = "ORGANIZATION_NAME"
+    organization = "deep-dive-adq"
     # Workspace ID
     workspaces {
       name = "web-network-dev"
