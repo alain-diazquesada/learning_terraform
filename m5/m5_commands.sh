@@ -1,6 +1,6 @@
 # Start by setting the GitHub token environment variable
 # PowerShell
-$env:GITHUB_TOKEN="TOKEN_VALUE"
+$env:GITHUB_TOKEN="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"
 
 # bash or zsh
 export GITHUB_TOKEN=TOKEN_VALUE
