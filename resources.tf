@@ -4,6 +4,7 @@
 
 provider "aws" {
   region = var.region
+
 }
 
 ##################################################################################
@@ -18,6 +19,7 @@ data "aws_availability_zones" "available" {}
 locals {
   common_tags = {
     Environment = var.environment
+    BillingCode = var.billing_code
   }
 }
 
